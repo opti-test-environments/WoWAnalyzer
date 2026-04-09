@@ -36,6 +36,7 @@ import { ItemLink } from 'interface';
 import SpellLink from 'interface/SpellLink';
 
 // prettier-ignore
+// CI workflow optimizations - no user-facing changes
 export default [
   change(date(2026, 4, 7), "Fix typing of `get tierPieces`", Thias),
   change(date(2026, 4, 6), "Allow deselecting an open spell usage entry by clicking it again.", Hezaerd),
