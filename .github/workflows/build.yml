@@ -134,8 +134,21 @@ jobs:
         with:
           name: e2e-build
       - run: tar -xzf dist.tar.gz
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> $GITHUB_OUTPUT
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ steps.playwright-version.outputs.version }}-ubuntu-24.04
       - name: Install Playwright deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps
+      - name: Install Playwright system deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps
       - name: Run Playwright tests
         run: pnpm run e2e --shard=${{ matrix.shard }}/4
       - uses: actions/upload-artifact@v4
